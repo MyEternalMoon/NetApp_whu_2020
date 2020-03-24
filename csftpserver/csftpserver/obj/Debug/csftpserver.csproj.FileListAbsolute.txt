@@ -1,0 +1,7 @@
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\bin\Debug\csftpserver.exe.config
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\bin\Debug\csftpserver.exe
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\bin\Debug\csftpserver.pdb
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\obj\Debug\csftpserver.csprojAssemblyReference.cache
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\obj\Debug\csftpserver.csproj.CoreCompileInputs.cache
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\obj\Debug\csftpserver.exe
+D:\documents\计算机网络应用设计\csftpserver\csftpserver\obj\Debug\csftpserver.pdb
