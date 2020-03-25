@@ -33,7 +33,827 @@ namespace csftpserver
 
     class FtpHandler//处理用户在客户端请求的命令，然后通过服务器处理返回操作的响应码
     {
+        // 初始化参数
+        TcpClient csocket;
+        TcpClient dsocket;
+        int id;
+        String cmd = "";
+        String param = "";
+        String user;
+        String remoteHost = "";
+        int remotePort = 0;
+        String dir = FtpServer.initDir;
+        String rootdir = "c:/";
+        int state = 0;
+        String reply;
+        StreamWriter out_Renamed;
+        int type = 0;
+        String requestfile = "";
+        bool isrest = false;
 
+        /// <summary>
+        /// 解析输入命令字符串：解析输入的字符串得到命令名，返回相应的响应码
+        /// </summary>
+        /// <param name="s">输入的字符串</param>
+        /// <returns>响应码</returns>
+        int parseInput(String s)
+        {
+            int p = 0;
+            int i = -1;
+            p = s.IndexOf(" ");
+            if (p==-1)
+            {
+                cmd = s;
+            }
+            else
+            {
+                cmd = s.Substring(0, (p) - (0));
+            }
+
+            if (p >= s.Length || p == -1)
+            {
+                param = "";
+            }
+            else
+            {
+                param = s.Substring(p + 1, (s.Length) - (p + 1));
+            }
+            cmd = cmd.ToUpper();
+
+
+            if (cmd.Equals("USER"))
+                i = 1;
+            if (cmd.Equals("PASS"))
+                i = 2;
+            if (cmd.Equals("ACCT"))
+                i = 3;
+            if (cmd.Equals("CDUP"))
+                i = 4;
+            if (cmd.Equals("SMNT"))
+                i = 5;
+            if (cmd.Equals("CWD"))
+                i = 6;
+            if (cmd.Equals("QUIT"))
+                i = 7;
+            if (cmd.Equals("REIN"))
+                i = 8;
+            if (cmd.Equals("PORT"))
+                i = 9;
+            if (cmd.Equals("PASV"))
+                i = 10;
+            if (cmd.Equals("TYPE"))
+                i = 11;
+            if (cmd.Equals("STRU"))
+                i = 12;
+            if (cmd.Equals("MODE"))
+                i = 13;
+            if (cmd.Equals("RETR"))
+                i = 14;
+            if (cmd.Equals("STOR"))
+                i = 15;
+            if (cmd.Equals("STOU"))
+                i = 16;
+            if (cmd.Equals("APPE"))
+                i = 17;
+            if (cmd.Equals("ALLO"))
+                i = 18;
+            if (cmd.Equals("REST"))
+                i = 19;
+            if (cmd.Equals("RNFR"))
+                i = 20;
+            if (cmd.Equals("RNTO"))
+                i = 21;
+            if (cmd.Equals("ABOR"))
+                i = 22;
+            if (cmd.Equals("DELE"))
+                i = 23;
+            if (cmd.Equals("RMD"))
+                i = 24;
+            if (cmd.Equals("XMKD"))
+                i = 25;
+            if (cmd.Equals("MKD"))
+                i = 25;
+            if (cmd.Equals("PWD"))
+                i = 26;
+            if (cmd.Equals("LIST"))
+                i = 27;
+            if (cmd.Equals("NLST"))
+                i = 28;
+            if (cmd.Equals("SITE"))
+                i = 29;
+            if (cmd.Equals("SYST"))
+                i = 30;
+            if (cmd.Equals("HELP"))
+                i = 31;
+            if (cmd.Equals("NOOP"))
+                i = 32;
+            if (cmd.Equals("XPWD"))
+                i = 33;
+            return i;
+        } // parseInput() end
+
+        /// <summary>
+        /// 传入路径，验证是否合法
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal int validatePath(String s)
+        {
+            FileInfo f = new FileInfo(s);
+            bool tmpBool;
+            if (File.Exists(f.FullName))
+                tmpBool = true;
+            else
+                tmpBool = Directory.Exists(f.FullName);
+            if (tmpBool && !Directory.Exists(f.FullName))
+            {
+                String s1 = s.ToLower();
+                String s2 = rootdir.ToLower();
+                if (s1.StartsWith(s2))
+                    return 1;
+                else
+                    return 0;
+            }
+            f = new FileInfo(addTail(dir) + s);
+            bool tmpBool2;
+            if (File.Exists(f.FullName))
+                tmpBool2 = true;
+            else
+                tmpBool2 = Directory.Exists(f.FullName);
+            if (tmpBool2 && !Directory.Exists(f.FullName))
+            {
+                String s1 = (addTail(dir) + s).ToLower();
+                String s2 = rootdir.ToLower();
+                if (s1.StartsWith(s2))
+                    return 2;
+                else
+                    return 0;
+            }
+            return 0;
+
+        }
+
+        /// <summary>
+        /// 校验密码
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal bool checkPass(String s)
+        {
+            for (int i = 0; i < FtpServer.usersInfo.Count; i++)
+            {
+                if(((UserInfo)FtpServer.usersInfo[i]).user.Equals(user) &&
+                ((UserInfo)FtpServer.usersInfo[i]).password.Equals(s))
+                {
+                    rootdir = ((UserInfo)FtpServer.usersInfo[i]).workDir;
+                    dir = ((UserInfo)FtpServer.usersInfo[i]).workDir;
+                    return true;
+                }
+            }
+            return false;
+        } // checkPass() end
+
+        internal bool commandUSER()//USER命令的业务逻辑函数
+        {// 当用户输入USER命令后显示相应消息，置状态位
+            if(cmd.Equals("USER"))
+            {
+                reply = "331 User name okay, need password";
+                user = param;
+                state = FtpState.FS_WAIT_PASS;
+                return false;
+            }
+            else
+            {
+                reply = "501 Syntax error in parameters or arguments";
+                return true;
+            }
+        } // commandUSER() end
+        
+
+        internal bool commandPASS()//登录
+        {// 当用户输入PASS命令后，判断密码是否合法并执行相应的登录动作
+            if (cmd.Equals("PASS"))
+            {
+                if (checkPass(param))
+                {
+                    reply = "230 User logged in, proceed";
+                    state = FtpState.FS_LOGIN;
+                    Console.Out.WriteLine("Message: uset"+ user + "Form" + remoteHost + 
+                        "Login");
+                    Console.Out.Write("->");
+                    return false;
+                }
+                else
+                {
+                    reply = "530 Not logged in";
+                    return true;
+                }
+            }
+            else
+            {
+                reply = "501 Syntax error in parameters or arguments";
+                return true;
+            }
+        } // commandPASS() end
+
+        internal void errCMD()//显示出错信息
+        {
+            reply = "500 Syntax error, command unrecognized";
+        }
+        
+
+        internal bool commandCDUP()//寻找当前目录
+        {
+            dir = FtpServer.initDir;
+            FileInfo f = new FileInfo(dir);
+            if (f.DirectoryName != null && (!dir.Equals(rootdir)))
+            {
+                dir = f.DirectoryName;
+                reply = "200 Command okay";
+            }
+            else
+            {
+                reply = "550 Current directory has no parent";
+            }
+
+            return false;
+        } // commandCDUP() end
+
+        internal bool commandCWD()//判别是否存在所对应的工作目录
+        {
+            FileInfo f = new FileInfo(param);
+            String s = "";
+            String s1 = "";
+            if(dir.EndsWith("/"))
+                s = dir;
+            else    
+                s = dir + "/";
+            FileInfo f1 = new FileInfo(s + param);
+
+            bool tmpBool;
+            if(File.Exists(f.FullName))
+                tmpBool = true;
+            else
+                tmpBool = Directory.Exists(f.FullName);
+            if (Directory.Exists(f.FullName) && tmpBool)
+            {
+                if (param.Equals("..") || param.Equals("..\\"))
+                {
+                    if (String.Compare(dir, rootdir, true) == 0)
+                    {
+                        reply = "550 The directory dose not exists";
+                    }
+                    else
+                    {
+                        s1 = new FileInfo(dir).DirectoryName;
+                        if (s1 != null)
+                        {
+                            dir = s1;
+                            reply = "250 Requested file action okay, directory change to " + dir;
+                        }
+                        else{
+                            reply = "550 The directory does not exists";
+                        }
+                    }
+                }
+                else if(param.Equals(".") || param.Equals(".\\"))
+                {
+                    
+                }
+                else
+                {
+                    dir = param;
+                    reply = "250 Requested file action okay, directory change to " + dir;
+                }
+            }
+            else
+            {
+                bool tmpBool2;
+                if(File.Exists(f1.FullName))
+                    tmpBool2 = true;
+                else
+                    tmpBool2 = Directory.Exists(f1.FullName);
+                if (Directory.Exists(f1.FullName) && tmpBool2)
+                {
+                    dir = s + param;
+                    reply = "250 Requested file action okay, directory change to " + dir;
+                }
+                else
+                    reply = "501 Syntax error in parameters or arguments";
+            }
+
+            return false;
+        } // commandCWD() end
+
+        internal bool commandQUIT() // 退出
+        {
+            reply = "221 Service closing control connection";
+            return true;
+        } // commandQUIT() end
+
+        internal bool commandPORT() // 解析字符串，查看是否有格式问题
+        {
+            int p1 = 0;
+            int p2 = 0;
+            int[] a = new int[6];
+            int i = 0;
+            try
+            {
+                while((p2 = param.IndexOf(",", p1)) != -1)
+                {
+                    a[i] = Int32.Parse(param.Substring(p1, (p2)-(p1)));
+                    p2 = p2 + 1;
+                    p1 = p2;
+                    i++;
+                }
+                a[i] = Int32.Parse(param.Substring(p1, (param.Length) - (p1)));
+            }
+            catch (FormatException e)
+            {
+                reply = "501 Syntax error in parameters or arguments";
+                return false;
+            }
+            finally{}
+            remoteHost = a[0] + "." + a[1] + "." + a[2] + "." + a[3];
+            remotePort = a[4] * 256 + a[5];
+            reply = "200 Command okay";
+            return false;
+
+        } // commandPORT() end
+
+        internal bool commandLIST() // 命令LIST，启动二进制传输模式
+        {
+            try
+            {
+                dsocket = new TcpClient(remoteHost, remotePort);
+                StreamWriter temp_writer;
+                temp_writer = new StreamWriter(dsocket.GetStream(), Encoding.Default);
+                StreamWriter dout = temp_writer;
+                if (param.Equals("") || param.Equals("LIST"))
+                {
+                    out_Renamed.WriteLine("150 Opening ASCII mode data connection for/bin/ls");
+                    FileInfo f = new FileInfo(dir);
+                    String[] dirStructure = Directory.GetFileSystemEntries(f.FullName);
+                    String fileType;
+                    for (int i = 0; i < dirStructure.Length; i++)
+                    {
+                        if (dirStructure[i].IndexOf(".") != -1)
+                        {
+                            fileType = "-";
+                        }   
+                        else
+                        {
+                            fileType = "d";
+                        }
+                        dout.WriteLine(fileType + dirStructure[i]);
+                    }
+                }
+                dout.Close();
+                dsocket.Close();
+                reply = "226 Transfer complete !";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "451 Requested action aborted: local error in processing";
+                return false;
+            }
+            finally{}
+            return false;
+        } // commandLIST() end
+
+        internal bool commandTYPE() //命令TYPE：获取命令类型
+        {
+            if (param.Equals("a"))
+            {
+                type = FtpState.FTYPE_ASCII;
+                reply = "200 Command okay Change to ASCII mode";
+            }
+            else if (param.Equals("i"))
+            {
+                type = FtpState.FTYPE_IMAGE;
+                reply = "200 Command okay Change to BINARY mode";
+            }
+            else{
+                reply = "504 Command not implemented for that parameter";
+            }
+                
+            return false;
+        } // commandTYPE() end
+
+        internal bool commandRETR() //启动二进制传输模式，初始化工作环境
+        {
+            requestfile = param;
+            FileInfo f = new FileInfo(requestfile);
+            bool tmpBool;
+            if (File.Exists(f.FullName))
+                tmpBool = true;
+            else
+                tmpBool = Directory.Exists(f.FullName);
+            if (!tmpBool)
+            {
+                f = new FileInfo(addTail(dir) + param);
+                bool tmpBool2;
+                if(File.Exists(f.FullName))
+                    tmpBool2 = true;
+                else
+                    tmpBool2  = Directory.Exists(f.FullName);
+                if (!tmpBool2)
+                {
+                    reply = "550 File not found";
+                    return false;
+                }
+                requestfile = addTail(dir) + param;
+            }
+            if (isrest)
+            {
+                
+            }
+            else
+            {
+                if(type == FtpState.FTYPE_IMAGE)
+                {
+                    try
+                    {
+                        out_Renamed.WriteLine("150 Opening Binary mode data connection for " + 
+                            requestfile);
+                        dsocket = new TcpClient(remoteHost, remotePort);
+                        BufferedStream fin = new BufferedStream(new FileStream(requestfile, FileMode.Open, FileAccess.Read));
+                        StreamWriter dout = new StreamWriter(dsocket.GetStream());
+                        sbyte[] buf = new sbyte[1024];
+                        int l = 0;
+                        while((l = SupportClass.ReadInput(fin, buf, 0, 1024)) != -1)
+                        {
+                            dout.Write(SupportClass.ToCharArray(buf), 0, 1);
+                        }
+                        fin.Close();
+                        dout.Close();
+                        dsocket.Close();
+                        reply = "226 Transfer complete !";
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        reply = "451 Requested action aborted: local error in processing";
+                        return false;
+                    }
+                    finally{}
+                }
+                if (type == FtpState.FTYPE_ASCII)
+                {
+                    try
+                    {
+                        out_Renamed.WriteLine("150 Opening ASCII mode data connection for " + 
+                            requestfile);
+                        dsocket = new TcpClient(remoteHost, remotePort);
+                        StreamReader fin = new StreamReader(new StreamReader(requestfile,Encoding.Default).BaseStream,
+                            new StreamReader(requestfile,Encoding.Default).CurrentEncoding);
+                        StreamWriter temp_writer;
+                        temp_writer = new StreamWriter(dsocket.GetStream(),Encoding.Default);
+                        temp_writer.AutoFlush = true;
+                        StreamWriter dout = temp_writer;
+                        String s;
+                        while ((s = fin.ReadLine()) != null)
+                        {
+                            dout.WriteLine(s);
+                        }
+                        fin.Close();
+                        dout.Close();
+                        dsocket.Close();
+                        reply = "226 Transfer complete !";
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        reply = "451 Requested action aborted: local error in processing";
+                        return false;
+                    }
+                    finally{}
+                }
+            }
+            return false;
+        } // commandRETR() end
+
+
+        internal bool commandSTOR()//获取当前目录
+        {
+            if (param.Equals(""))
+            {
+                reply = "501 Syntax error in parameters or arguments";
+                return false;
+            }
+            requestfile = addTail(dir) + param;
+            if(type == FtpState.FTYPE_IMAGE)
+            {
+                try
+                {
+                    out_Renamed.WriteLine("150 Opening Binary mode data connection for " + 
+                        requestfile);
+                    dsocket = new TcpClient(remoteHost, remotePort);
+                    BufferedStream fout = new BufferedStream(new FileStream(requestfile, FileMode.Create));
+                    BufferedStream din = new BufferedStream(dsocket.GetStream());
+                    sbyte[] buf = new sbyte[1024];
+                    int l = 0;
+                    while((l = SupportClass.ReadInput(din, buf, 0, 1024)) != -1)
+                    {
+                        fout.Write(SupportClass.ToCharArray(buf), 0, 1);
+                    }
+                    din.Close();
+                    fout.Close();
+                    dsocket.Close();
+                    reply = "226 Transfer complete !";
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    reply = "451 Requested action aborted: local error in processing";
+                    return false;
+                }
+                finally{}
+            }
+            if (type == FtpState.FTYPE_ASCII)
+            {
+                try
+                {
+                    out_Renamed.WriteLine("150 Opening ASCII mode data connection for " + 
+                        requestfile);
+                    dsocket = new TcpClient(remoteHost, remotePort);
+                    StreamWriter fout = new StreamWriter(new FileStream(requestfile,
+                        FileMode.Create), Encoding.Default);                        
+                    StreamReader din = new StreamReader(new StreamReader(dsocket.GetStream(),
+                        Encoding.Default).BaseStream, 
+                        new StreamReader(dsocket.GetStream(),Encoding.Default).CurrentEncoding);
+                    String line;
+                    while ((line = din.ReadLine()) != null)
+                    {
+                        fout.WriteLine(line);
+                    }
+                    din.Close();
+                    fout.Close();
+                    dsocket.Close();
+                    reply = "226 Transfer complete !";
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    reply = "451 Requested action aborted: local error in processing";
+                    return false;
+                }
+                finally{}
+            }
+            return false;
+        } //commandSTOR() end
+
+        internal bool commandPWD() // 显示当前目录
+        {
+            reply = "257 " + dir + " is current directory.";
+            return false;
+        } //commandPWD() end
+
+        internal bool commandNOOP() // 确认
+        {
+            reply = "200 OK.";
+            return false;
+        } //commandNOOP end
+
+        internal bool commandABOR() // 关闭套接字
+        {
+            try
+            {
+                dsocket.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "451 Requested action aborted: local error in processing";
+                return false;
+            }
+            finally{}
+            reply = "421 Service not available, closing control connection";
+            return false;
+        } //commandABOR() end
+
+        internal bool commandDELE() // 删除文件
+        {
+            int i = validatePath(param);
+            if (i == 0)
+            {
+                reply = "550 Request action not taken";
+                return false;
+            }
+            if (i == 1)
+            {
+                FileInfo f = new FileInfo(param);
+                bool tmpBool;
+                if (File.Exists(f.FullName))
+                {
+                    File.Delete(f.FullName);
+                    tmpBool = true;
+                }
+                else if (Directory.Exists(f.FullName))
+                {
+                    Directory.Delete(f.FullName);
+                    tmpBool = true;
+                }
+                else
+                {
+                    tmpBool = false;
+                }
+                bool generatedAux = tmpBool;
+            }
+            if (i == 2)
+            {
+                FileInfo f = new FileInfo(addTail(dir) + param);
+                bool tmpBool2;
+                if (File.Exists(f.FullName))
+                {
+                    File.Delete(f.FullName);
+                    tmpBool2 = true;
+                }
+                else if(Directory.Exists(f.FullName))
+                {
+                    Directory.Delete(f.FullName);
+                    tmpBool2 = true;
+                }
+                else
+                {
+                    tmpBool2 = false;
+                }
+                bool generatedAux2 = tmpBool2;
+            }
+
+            reply = "250 Request file action ok, complete.";
+            return false;
+        } //commandDELE() end
+
+        internal bool commandMKD() // 创建目录
+        {
+            String s1 = param.ToLower();
+            String s2 = rootdir.ToLower();
+            if (s1.StartsWith(s2))
+            {
+                FileInfo f = new FileInfo(param);
+                bool tmpBool;
+                if (File.Exists(f.FullName))
+                    tmpBool = true;
+                else
+                    tmpBool = Directory.Exists(f.FullName);
+                if (tmpBool)
+                {
+                    reply = "550 Request action not taken";
+                    return false;
+                }
+                else
+                {
+                    Directory.CreateDirectory(f.FullName);
+                    reply = "250 Request file action ok, complete.";
+                }
+            }
+            else
+            {
+                FileInfo f = new FileInfo(addTail(dir) + param);
+                bool tmpBool2;
+                if (File.Exists(f.FullName))
+                    tmpBool2 = true;
+                else
+                    tmpBool2 = Directory.Exists(f.FullName);
+                if (tmpBool2)
+                {
+                    reply = "550 Request action not taken";
+                    return false;
+                }
+                else
+                {
+                    Directory.CreateDirectory(f.FullName);
+                    reply = "250 Request file action ok, complete.";
+                }
+            }
+
+            return false;
+        } //commandMKD() end
+
+
+        internal String addTail(String s) // 增加尾缀"/"
+        {
+            if (!s.EndsWith("/"))
+                s = s + "/";
+            return s;
+        }
+
+        public FtpHandler(TcpClient s, int i) // 构造函数
+        {
+            csocket = s;
+            id = i;
+        }
+
+        public void HandleThread() // 命令翻译
+        {
+            String str = "";
+            int parseResult;
+
+            try
+            {
+                StreamReader in_Renamed = new StreamReader(
+                    new StreamReader(csocket.GetStream(),Encoding.Default).BaseStream, 
+                    new StreamReader(csocket.GetStream(),Encoding.Default).CurrentEncoding);
+                StreamWriter temp_writer;
+                temp_writer = new StreamWriter(csocket.GetStream(),Encoding.Default);
+                temp_writer.AutoFlush = true;
+                out_Renamed  = temp_writer;
+                state = FtpState.FS_WAIT_LOGIN;
+                bool finished = false;
+                while (!finished)
+                {
+                    str = in_Renamed.ReadLine();
+                    if(str == null)
+                        finished = true;
+                    else
+                    {
+                        parseResult = parseInput(str);
+                        Console.Out.WriteLine("Command:" + cmd + " Parameter:" + param);
+                        Console.Out.Write("->");
+                        switch(state)
+                        {
+                            case FtpState.FS_WAIT_LOGIN:
+                                finished = commandUSER();
+                                break;
+                            
+                            case FtpState.FS_WAIT_PASS:
+                                finished = commandPASS();
+                                break;
+                            
+                            case FtpState.FS_LOGIN:
+                                {
+                                    switch(parseResult)
+                                    {
+                                        case -1:
+                                            errCMD();
+                                            break;
+                                        
+                                        case 4:
+                                            finished = commandCDUP();
+                                            break;
+                                        
+                                        case 6:
+                                            finished = commandCWD();
+                                            break;
+                                        
+                                        case 7:
+                                            finished = commandQUIT();
+                                            break;
+                                        
+                                        case 9:
+                                            finished = commandPORT();
+                                            break;
+
+                                        case 27:
+                                            finished = commandLIST();
+                                            break;
+
+                                        case 11:
+                                            finished = commandTYPE();
+                                            break;
+
+                                        case 14:
+                                            finished = commandRETR();
+                                            break;
+
+                                        case 15:
+                                            finished = commandSTOR();
+                                            break;
+
+                                        case 26:
+                                        case 33:
+                                            finished = commandPWD();
+                                            break;
+
+                                        case 32:
+                                            finished = commandNOOP();
+                                            break;
+
+                                        case 22:
+                                            finished = commandABOR();
+                                            break;
+                                        
+                                        case 25:
+                                            finished = commandMKD();
+                                            break;
+                                    } // switch(parseResult) end
+                                } // case FtpState.FS_LOGIN: end
+                            break;
+                        } // switch(state) end
+                    } // else
+                    out_Renamed.WriteLine(reply);
+                } // while
+                csocket.Close();
+            }
+            //try
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());    
+            }
+            finally{}
+        }
     }
 
     class FtpConsole//承担在控制台上的所有业务逻辑
