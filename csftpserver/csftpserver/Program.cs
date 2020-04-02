@@ -480,11 +480,11 @@ namespace csftpserver
                         dsocket = new TcpClient(remoteHost, remotePort);
                         BufferedStream fin = new BufferedStream(new FileStream(requestfile, FileMode.Open, FileAccess.Read));
                         StreamWriter dout = new StreamWriter(dsocket.GetStream());
-                        sbyte[] buf = new sbyte[1024];
+                        byte[] buf = new byte[1024];
                         int l = 0;
-                        while((l = SupportClass.ReadInput(fin, buf, 0, 1024)) != -1)
+                        while ((fin.Read(buf, 0, 1024)) != -1)
                         {
-                            dout.Write(SupportClass.ToCharArray(buf), 0, 1);
+                            dout.Write(Encoding.ASCII.GetChars(buf), 0, 1);
                         }
                         fin.Close();
                         dout.Close();
@@ -552,11 +552,11 @@ namespace csftpserver
                     dsocket = new TcpClient(remoteHost, remotePort);
                     BufferedStream fout = new BufferedStream(new FileStream(requestfile, FileMode.Create));
                     BufferedStream din = new BufferedStream(dsocket.GetStream());
-                    sbyte[] buf = new sbyte[1024];
+                    byte[] buf = new byte[1024];
                     int l = 0;
-                    while((l = SupportClass.ReadInput(din, buf, 0, 1024)) != -1)
+                    while ((din.Read(buf, 0, 1024)) != -1)
                     {
-                        fout.Write(SupportClass.ToCharArray(buf), 0, 1);
+                        fout.Write(buf, 0, 1);
                     }
                     din.Close();
                     fout.Close();
