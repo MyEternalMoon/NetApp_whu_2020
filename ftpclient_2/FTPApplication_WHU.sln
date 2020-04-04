@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csftpserver", "csftpserver\csftpserver.csproj", "{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ftpClient", "FTPApplication_WHU\ftpClient.csproj", "{77AFAFD5-548F-4760-8B49-53CF9BE2098C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ftpClient", "..\ftpclient_2\FTPApplication_WHU\ftpClient.csproj", "{77AFAFD5-548F-4760-8B49-53CF9BE2098C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csftpserver", "..\csftpserver\csftpserver\csftpserver.csproj", "{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77AFAFD5-548F-4760-8B49-53CF9BE2098C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77AFAFD5-548F-4760-8B49-53CF9BE2098C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77AFAFD5-548F-4760-8B49-53CF9BE2098C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77AFAFD5-548F-4760-8B49-53CF9BE2098C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC24E30A-AA8F-41D7-9D93-1BA61F5E7A89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

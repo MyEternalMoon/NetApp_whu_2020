@@ -58,6 +58,7 @@ namespace csftpserver
         /// <returns>响应码</returns>
         int parseInput(String s)
         {
+            Console.WriteLine(s);
             int p = 0;
             int i = -1;
             p = s.IndexOf(" ");
@@ -136,7 +137,11 @@ namespace csftpserver
             if (cmd.Equals("PWD"))
                 i = 26;
             if (cmd.Equals("LIST"))
+            {
                 i = 27;
+                Console.WriteLine("LISTTTTTT");
+            }
+                
             if (cmd.Equals("NLST"))
                 i = 28;
             if (cmd.Equals("SITE"))
@@ -370,13 +375,13 @@ namespace csftpserver
             }
             catch (FormatException e)
             {
-                reply = "501 Syntax error in parameters or arguments";
-                return false;
             }
-            finally{}
-            remoteHost = a[0] + "." + a[1] + "." + a[2] + "." + a[3];
-            remotePort = a[4] * 256 + a[5];
-            reply = "200 Command okay";
+            finally{
+                remoteHost = a[0] + "." + a[1] + "." + a[2] + "." + a[3];
+                remotePort = a[4] * 256 + a[5];
+                reply = "200 Command okay";
+                
+            }
             return false;
 
         } // commandPORT() end
@@ -385,6 +390,7 @@ namespace csftpserver
         {
             try
             {
+                Console.WriteLine(remoteHost);
                 dsocket = new TcpClient(remoteHost, remotePort);
                 StreamWriter temp_writer;
                 temp_writer = new StreamWriter(dsocket.GetStream(), Encoding.Default);
@@ -429,7 +435,7 @@ namespace csftpserver
                 type = FtpState.FTYPE_ASCII;
                 reply = "200 Command okay Change to ASCII mode";
             }
-            else if (param.Equals("i"))
+            else if (param.Equals("I"))
             {
                 type = FtpState.FTYPE_IMAGE;
                 reply = "200 Command okay Change to BINARY mode";
@@ -753,9 +759,7 @@ namespace csftpserver
 
             try
             {
-                StreamReader in_Renamed = new StreamReader(
-                    new StreamReader(csocket.GetStream(),Encoding.Default).BaseStream, 
-                    new StreamReader(csocket.GetStream(),Encoding.Default).CurrentEncoding);
+                StreamReader in_Renamed = new StreamReader(csocket.GetStream(),Encoding.Default);
                 StreamWriter temp_writer;
                 temp_writer = new StreamWriter(csocket.GetStream(),Encoding.Default);
                 temp_writer.AutoFlush = true;
@@ -812,10 +816,12 @@ namespace csftpserver
 
                                         case 11:
                                             finished = commandTYPE();
+                                            Console.WriteLine("TYPE");
                                             break;
 
                                         case 14:
                                             finished = commandRETR();
+                                            Console.WriteLine("RETR");
                                             break;
 
                                         case 15:
@@ -972,7 +978,7 @@ namespace csftpserver
             String s = "";
             try
             {
-                StreamWriter fout = new StreamWriter(new StreamWriter(new FileStream("user.cfg", FileMode.Create), Encoding.Default).BaseStream, new StreamWriter(new FileStream("user.cfg", FileMode.Create), Encoding.Default).Encoding);
+                StreamWriter fout = new StreamWriter(new FileStream("user.cfg", FileMode.OpenOrCreate), Encoding.Default);
                 for(int i=0;i<FtpServer.usersInfo.Count;i++)
                 {
                     s = ((UserInfo)FtpServer.usersInfo[i]).user + "|" + ((UserInfo)FtpServer.usersInfo[i]).password + "|" + ((UserInfo)FtpServer.usersInfo[i]).workDir + "|";
@@ -1160,13 +1166,14 @@ namespace csftpserver
             try
             {
                 TcpListener tcpListener;
-                tcpListener = new TcpListener(Dns.GetHostByName(Dns.GetHostName()).AddressList[0], 21);
+                tcpListener = new TcpListener(IPAddress.Any, 21);
                 tcpListener.Start();
                 TcpListener s = tcpListener;
+                Console.WriteLine("I'm listening.");
                 while(true)
                 {
                     TcpClient incoming = s.AcceptTcpClient();
-                    StreamReader in_Renamed = new StreamReader(new StreamReader(incoming.GetStream(), Encoding.Default).BaseStream, new StreamReader(incoming.GetStream(), Encoding.Default).CurrentEncoding);
+                    StreamReader in_Renamed = new StreamReader(incoming.GetStream(), Encoding.Default);
                     StreamWriter temp_writer = new StreamWriter(incoming.GetStream(), Encoding.Default);
                     temp_writer.AutoFlush = true;
                     StreamWriter out_Renamed = temp_writer;
@@ -1260,6 +1267,7 @@ namespace csftpserver
         {
             initDir = "c:/";
             FtpServer ftpServer = new FtpServer();
+            Console.WriteLine("#");
         }
     }
 }
