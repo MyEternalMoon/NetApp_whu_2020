@@ -154,6 +154,8 @@ namespace csftpserver
                 i = 32;
             if (cmd.Equals("XPWD"))
                 i = 33;
+            if (cmd.Equals("OPTS"))
+                i = 34;
             return i;
         } // parseInput() end
 
@@ -243,7 +245,7 @@ namespace csftpserver
                 {
                     reply = "230 User logged in, proceed";
                     state = FtpState.FS_LOGIN;
-                    Console.Out.WriteLine("Message: uset"+ user + "Form" + remoteHost + 
+                    Console.Out.WriteLine("Message: user"+ user + "Form" + remoteHost + 
                         "Login");
                     Console.Out.Write("->");
                     return false;
@@ -840,7 +842,11 @@ namespace csftpserver
                                         case 22:
                                             finished = commandABOR();
                                             break;
-                                        
+
+                                        case 23:
+                                            finished = commandDELE();
+                                            break;
+
                                         case 25:
                                             finished = commandMKD();
                                             break;
