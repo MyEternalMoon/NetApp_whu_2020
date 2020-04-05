@@ -137,11 +137,7 @@ namespace csftpserver
             if (cmd.Equals("PWD"))
                 i = 26;
             if (cmd.Equals("LIST"))
-            {
-                i = 27;
-                Console.WriteLine("LISTTTTTT");
-            }
-                
+                i = 27;  
             if (cmd.Equals("NLST"))
                 i = 28;
             if (cmd.Equals("SITE"))
@@ -245,7 +241,7 @@ namespace csftpserver
                 {
                     reply = "230 User logged in, proceed";
                     state = FtpState.FS_LOGIN;
-                    Console.Out.WriteLine("Message: user"+ user + "Form" + remoteHost + 
+                    Console.Out.WriteLine("Message: user "+ user + " Form " + remoteHost + 
                         "Login");
                     Console.Out.Write("->");
                     return false;
