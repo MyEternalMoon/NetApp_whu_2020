@@ -50,8 +50,6 @@ namespace FTPApplication_WHU
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
             //指定数据的传输类型
             reqFTP.UseBinary = true;
-            //指定主动方式
-            reqFTP.UsePassive = false;
             //指定上传文件的长度
             reqFTP.ContentLength = fileInf.Length;
             //缓冲区大小设置成KB
@@ -98,7 +96,7 @@ namespace FTPApplication_WHU
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 reqFTP.KeepAlive = false;
                 reqFTP.Method = WebRequestMethods.Ftp.DeleteFile;
-                reqFTP.UsePassive = false;
+
                 string result = String.Empty;
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 long size = response.ContentLength;
@@ -130,7 +128,6 @@ namespace FTPApplication_WHU
                 reqFTP.UseBinary = true;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 reqFTP.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                reqFTP.UsePassive = false;
                 WebResponse response = reqFTP.GetResponse();
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 string line = reader.ReadLine();
@@ -168,7 +165,6 @@ namespace FTPApplication_WHU
                 ftp = (FtpWebRequest)FtpWebRequest.Create(new Uri("fp:/" + this.parent.ftpServerIP + "/"));
                 ftp.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 ftp.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                reqFTP.UsePassive = false;
                 WebResponse response = ftp.GetResponse();
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 string line = reader.ReadLine();
@@ -206,7 +202,6 @@ namespace FTPApplication_WHU
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp:/ " + this.parent.ftpServerIP + " / " + fileName));
                 reqFTP.Method = WebRequestMethods.Ftp.DownloadFile;
                 reqFTP.UseBinary = true;
-                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -246,7 +241,6 @@ namespace FTPApplication_WHU
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" +this.parent.ftpServerIP+ "/"+filename));
                 reqFTP.Method = WebRequestMethods.Ftp.GetFileSize;
                 reqFTP.UseBinary = true;
-                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -275,7 +269,6 @@ namespace FTPApplication_WHU
                 reqFTP.Method = WebRequestMethods.Ftp.Rename;
                 reqFTP.RenameTo = newFilename;
                 reqFTP.UseBinary = true;
-                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -302,7 +295,6 @@ namespace FTPApplication_WHU
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP+"/" +dirName));
                 reqFTP.Method = WebRequestMethods.Ftp.MakeDirectory;
                 reqFTP.UseBinary = true;
-                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
