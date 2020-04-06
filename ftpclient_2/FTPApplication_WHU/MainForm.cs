@@ -47,6 +47,7 @@ namespace FTPApplication_WHU
             //默认情况下KeepAlive是true
             reqFTP.KeepAlive = false;
             //指定要执行的命令
+            reqFTP.UsePassive = false;
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
             //指定数据的传输类型
             reqFTP.UseBinary = true;
@@ -128,6 +129,7 @@ namespace FTPApplication_WHU
                 reqFTP.UseBinary = true;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 reqFTP.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                reqFTP.UsePassive = false;
                 WebResponse response = reqFTP.GetResponse();
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 string line = reader.ReadLine();
