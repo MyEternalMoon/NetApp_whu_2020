@@ -41,7 +41,7 @@ namespace FTPApplication_WHU
 
             //通过前面得到的uri创建FtpWebRequest对象
             reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP + "/" + fileInf.Name));
-           // Console.WriteLine("Hi");
+            // Console.WriteLine("Hi");
             //提供网络允许的基于密码的身份验证方案
             reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
             //默认情况下KeepAlive是true
@@ -51,6 +51,8 @@ namespace FTPApplication_WHU
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
             //指定数据的传输类型
             reqFTP.UseBinary = true;
+            //指定主动方式
+            reqFTP.UsePassive = false;
             //指定上传文件的长度
             reqFTP.ContentLength = fileInf.Length;
             //缓冲区大小设置成KB
@@ -97,7 +99,7 @@ namespace FTPApplication_WHU
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 reqFTP.KeepAlive = false;
                 reqFTP.Method = WebRequestMethods.Ftp.DeleteFile;
-
+                reqFTP.UsePassive = false;
                 string result = String.Empty;
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 long size = response.ContentLength;
@@ -167,6 +169,7 @@ namespace FTPApplication_WHU
                 ftp = (FtpWebRequest)FtpWebRequest.Create(new Uri("fp:/" + this.parent.ftpServerIP + "/"));
                 ftp.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 ftp.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                ftp.UsePassive = false;
                 WebResponse response = ftp.GetResponse();
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 string line = reader.ReadLine();
@@ -204,6 +207,7 @@ namespace FTPApplication_WHU
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp:/ " + this.parent.ftpServerIP + " / " + fileName));
                 reqFTP.Method = WebRequestMethods.Ftp.DownloadFile;
                 reqFTP.UseBinary = true;
+                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -240,9 +244,10 @@ namespace FTPApplication_WHU
             long fileSize = 0;
             try
             {
-                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" +this.parent.ftpServerIP+ "/"+filename));
+                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP + "/" + filename));
                 reqFTP.Method = WebRequestMethods.Ftp.GetFileSize;
                 reqFTP.UseBinary = true;
+                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -251,7 +256,7 @@ namespace FTPApplication_WHU
                 ftpStream.Close();
                 response.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -267,10 +272,11 @@ namespace FTPApplication_WHU
             FtpWebRequest reqFTP;
             try
             {
-                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp:/" + this.parent.ftpServerIP+ "/" +currentFilename));
+                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp:/" + this.parent.ftpServerIP + "/" + currentFilename));
                 reqFTP.Method = WebRequestMethods.Ftp.Rename;
                 reqFTP.RenameTo = newFilename;
                 reqFTP.UseBinary = true;
+                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -278,7 +284,7 @@ namespace FTPApplication_WHU
                 ftpStream.Close();
                 response.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -294,9 +300,10 @@ namespace FTPApplication_WHU
             try
             {
                 // dirName是所要创建的目录名
-                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP+"/" +dirName));
+                reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP + "/" + dirName));
                 reqFTP.Method = WebRequestMethods.Ftp.MakeDirectory;
                 reqFTP.UseBinary = true;
+                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
@@ -385,6 +392,7 @@ namespace FTPApplication_WHU
                 Location = new Point(Control.MousePosition.X - mouseOff.X, Control.MousePosition.Y - mouseOff.Y);
             }
         }
+
         private void MainForm_MouseUp(object sender, MouseEventArgs e)
         {
             if (leftFlag)
@@ -443,7 +451,7 @@ namespace FTPApplication_WHU
             catch
             {
 
-            }          
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)//删除按钮
