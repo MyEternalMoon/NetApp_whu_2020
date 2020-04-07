@@ -108,7 +108,7 @@ namespace FTPApplication_WHU
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP + "/"));
                 reqFTP.UseBinary = true;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
-                reqFTP.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                reqFTP.Method = WebRequestMethods.Ftp.ListDirectory;
                 reqFTP.UsePassive = false;
                 WebResponse response = reqFTP.GetResponse();
                 StreamReader reader = new StreamReader(response.GetResponseStream());

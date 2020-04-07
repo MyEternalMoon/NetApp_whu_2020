@@ -406,25 +406,11 @@ namespace csftpserver
                 {
                     out_Renamed.WriteLine("150 Opening ASCII mode data connection for/bin/ls");
                     FileInfo f = new FileInfo(dir);
-                    // String[] dirStructure = Directory.GetFiles(f.FullName);
-                    // String fileType;
                     DirectoryInfo di = new DirectoryInfo(f.FullName);
-                    foreach(FileInfo fi in di.GetFiles())
+                    foreach (FileInfo fi in di.GetFiles())
                     {
-                        dout.WriteLine(fi.Name);
+                        dout.WriteLine(fi.Name + "\t" + fi.LastWriteTime.ToString() + "\t" + fi.Length.ToString());
                     }
-                   // for (int i = 0; i < dirStructure.Length; i++)
-                   // {
-                        /**if (dirStructure[i].IndexOf(".") != -1)
-                        {
-                            fileType = "-";
-                        }   
-                        else
-                        {
-                            fileType = "d";
-                        }**/
-                    //    dout.WriteLine(dirStructure[i].);
-                  //  }
                 }
                 dout.Close();
                 dsocket.Close();
@@ -436,9 +422,57 @@ namespace csftpserver
                 reply = "451 Requested action aborted: local error in processing";
                 return false;
             }
-            finally{}
+            finally { }
             return false;
         } // commandLIST() end
+
+        internal bool commandNLST() // 命令NLST，启动二进制传输模式
+        {
+            try
+            {
+                Console.WriteLine(remoteHost);
+                dsocket = new TcpClient(remoteHost, remotePort);
+                StreamWriter temp_writer;
+                temp_writer = new StreamWriter(dsocket.GetStream(), Encoding.Default);
+                StreamWriter dout = temp_writer;
+                if (param.Equals("") || param.Equals("LIST"))
+                {
+                    out_Renamed.WriteLine("150 Opening ASCII mode data connection for/bin/ls");
+                    FileInfo f = new FileInfo(dir);
+                    // String[] dirStructure = Directory.GetFiles(f.FullName);
+                    // String fileType;
+                    DirectoryInfo di = new DirectoryInfo(f.FullName);
+                    foreach (FileInfo fi in di.GetFiles())
+                    {
+                        dout.WriteLine(fi.Name);
+                    }
+                    // for (int i = 0; i < dirStructure.Length; i++)
+                    // {
+                    /**if (dirStructure[i].IndexOf(".") != -1)
+                    {
+                        fileType = "-";
+                    }   
+                    else
+                    {
+                        fileType = "d";
+                    }**/
+                    //    dout.WriteLine(dirStructure[i].);
+                    //  }
+                }
+                dout.Close();
+                dsocket.Close();
+                reply = "226 Transfer complete !";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "451 Requested action aborted: local error in processing";
+                return false;
+            }
+            finally { }
+            return false;
+        } // commandNLST() end
+
 
         internal bool commandTYPE() //命令TYPE：获取命令类型
         {
@@ -927,8 +961,10 @@ namespace csftpserver
                                             break;
 
                                         case 27:
-                                        case 28: // commandNLIS
                                             finished = commandLIST();
+                                            break;
+                                        case 28:
+                                            finished = commandNLST();
                                             break;
 
                                         case 11:
