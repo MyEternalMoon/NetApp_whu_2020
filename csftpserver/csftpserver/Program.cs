@@ -216,6 +216,11 @@ namespace csftpserver
             return false;
         } // checkPass() end
 
+        internal string getUSER()
+        {
+            return user;
+        }
+
         internal bool commandUSER()//USER命令的业务逻辑函数
         {// 当用户输入USER命令后显示相应消息，置状态位
             if(cmd.Equals("USER"))
@@ -888,6 +893,7 @@ namespace csftpserver
             {
                 Console.Out.Write(((UserInfo)FtpServer.usersInfo[i]).user + "\t\t\t" + ((UserInfo)FtpServer.usersInfo[i]).workDir);
             }
+            Console.Out.WriteLine("");
             return false;
         }
 
@@ -896,7 +902,7 @@ namespace csftpserver
             int i = 0;
             for(i=0;i<FtpServer.users.Count;i++)
             {
-
+                Console.Out.WriteLine(((FtpHandler)FtpServer.users[i]).getUSER());
             }
             return false;
         }
@@ -1136,7 +1142,9 @@ namespace csftpserver
                 conParam = s.Substring(p + 1, (s.Length) - (p + 1));
             upperCmd = conCmd.ToUpper();
 
-            if (upperCmd.Equals("QUIT") || upperCmd.Equals("EXIT"))
+            if (upperCmd.Equals("LIST"))
+                return 0;
+            else if (upperCmd.Equals("QUIT") || upperCmd.Equals("EXIT"))
                 return 1;
             else if (upperCmd.Equals("ADDUSER"))
                 return 2;
