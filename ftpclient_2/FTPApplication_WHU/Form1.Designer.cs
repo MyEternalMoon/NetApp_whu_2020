@@ -102,7 +102,6 @@
             this.IDBox.Name = "IDBox";
             this.IDBox.Size = new System.Drawing.Size(321, 28);
             this.IDBox.TabIndex = 9;
-            this.IDBox.TextChanged += new System.EventHandler(this.IDBox_TextChanged);
             this.IDBox.GotFocus += new System.EventHandler(this.box_GetFocus);
             this.IDBox.LostFocus += new System.EventHandler(this.box_LostFocus);
             // 
@@ -181,7 +180,6 @@
             this.label6.Size = new System.Drawing.Size(107, 23);
             this.label6.TabIndex = 18;
             this.label6.Text = "FTP连接工具";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // pictureBox1
             // 
