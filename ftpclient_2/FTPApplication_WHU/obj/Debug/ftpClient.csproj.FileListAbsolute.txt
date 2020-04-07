@@ -30,3 +30,15 @@ D:\documents\计算机网络应用设计\NetApp_whu_2020\ftpclient_2\FTPApplicat
 D:\documents\计算机网络应用设计\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.exe
 D:\documents\计算机网络应用设计\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.pdb
 D:\VsProjects\FTP_WHU\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.MainWindow.resources
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\bin\Debug\FTPApplication_WHU.exe.config
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\bin\Debug\FTPApplication_WHU.exe
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\bin\Debug\FTPApplication_WHU.pdb
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\ftpClient.csprojResolveAssemblyReference.cache
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.Form1.resources
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.MainForm.resources
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.MainWindow.resources
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.Properties.Resources.resources
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\ftpClient.csproj.GenerateResource.cache
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\ftpClient.csproj.CoreCompileInputs.cache
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.exe
+E:\Work\Github\NetApp_whu_2020\ftpclient_2\FTPApplication_WHU\obj\Debug\FTPApplication_WHU.pdb

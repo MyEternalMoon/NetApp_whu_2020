@@ -18,3 +18,10 @@ D:\documents\计算机网络应用设计\NetApp_whu_2020\csftpserver\csftpserver
 D:\documents\计算机网络应用设计\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.exe
 D:\documents\计算机网络应用设计\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.pdb
 >>>>>>> Stashed changes
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\bin\Debug\csftpserver.exe.config
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\bin\Debug\csftpserver.exe
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\bin\Debug\csftpserver.pdb
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.csprojResolveAssemblyReference.cache
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.csproj.CoreCompileInputs.cache
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.exe
+E:\Work\Github\NetApp_whu_2020\csftpserver\csftpserver\obj\Debug\csftpserver.pdb

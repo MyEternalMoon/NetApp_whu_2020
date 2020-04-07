@@ -152,6 +152,8 @@ namespace csftpserver
                 i = 33;
             if (cmd.Equals("OPTS"))
                 i = 34;
+            if (cmd.Equals("SIZE"))
+                i = 35;
             return i;
         } // parseInput() end
 
@@ -746,6 +748,34 @@ namespace csftpserver
             return false;
         } //commandMKD() end
 
+        internal bool commandSIZE() // 获取文件长度
+        {
+            requestfile = param;
+            try
+            {
+                Console.WriteLine(remoteHost);
+                dsocket = new TcpClient(remoteHost, remotePort);
+                StreamWriter temp_writer;
+                temp_writer = new StreamWriter(dsocket.GetStream(), Encoding.Default);
+                StreamWriter dout = temp_writer;
+                out_Renamed.WriteLine("150 Opening ASCII mode data connection for " +
+                    requestfile);
+                FileInfo f = new FileInfo(requestfile);
+                dout.WriteLine(f.Length.ToString());
+                dout.Close();
+                dsocket.Close();
+                reply = "226 Transfer complete !";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "451 Requested action aborted: local error in processing";
+                return false;
+            }
+            finally { }
+            return false;
+        }
+
 
         internal String addTail(String s) // 增加尾缀"/"
         {
@@ -819,17 +849,16 @@ namespace csftpserver
                                             break;
 
                                         case 27:
+                                        case 28: // commandNLIS
                                             finished = commandLIST();
                                             break;
 
                                         case 11:
-                                            finished = commandTYPE();
-                                            Console.WriteLine("TYPE");
+                                            finished = commandTYPE();                                            
                                             break;
 
                                         case 14:
                                             finished = commandRETR();
-                                            Console.WriteLine("RETR");
                                             break;
 
                                         case 15:
@@ -855,6 +884,10 @@ namespace csftpserver
 
                                         case 25:
                                             finished = commandMKD();
+                                            break;
+
+                                        case 35:
+                                            finished = commandSIZE();
                                             break;
                                     } // switch(parseResult) end
                                 } // case FtpState.FS_LOGIN: end
@@ -1184,7 +1217,7 @@ namespace csftpserver
                 tcpListener = new TcpListener(IPAddress.Any, 21);
                 tcpListener.Start();
                 TcpListener s = tcpListener;
-                Console.WriteLine("I'm listening.");
+                //Console.WriteLine("I'm listening.");
                 while(true)
                 {
                     TcpClient incoming = s.AcceptTcpClient();

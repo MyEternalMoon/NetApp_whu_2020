@@ -118,6 +118,7 @@
             this.checkLengthBtn.TabIndex = 10;
             this.checkLengthBtn.Text = "显示长度";
             this.checkLengthBtn.UseVisualStyleBackColor = false;
+            this.checkLengthBtn.Click += new System.EventHandler(this.checkLengthBtn_Click);
             // 
             // renameBtn
             // 
