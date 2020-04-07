@@ -61,7 +61,7 @@ namespace FTPApplication_WHU
                 // 如果连接成功建立了，就把返回的那个ftpRequest对象放在this的域内，然后把this传递给MainForm
                 // 这样就可以继续使用了
                 IDBox.Text = "OK";
-                MainForm mainform = new MainForm(this);
+                MainWindow mainform = new MainWindow(this);
                 mainform.Show();
             }
         }

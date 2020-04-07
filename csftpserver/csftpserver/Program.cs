@@ -397,20 +397,25 @@ namespace csftpserver
                 {
                     out_Renamed.WriteLine("150 Opening ASCII mode data connection for/bin/ls");
                     FileInfo f = new FileInfo(dir);
-                    String[] dirStructure = Directory.GetFileSystemEntries(f.FullName);
-                    String fileType;
-                    for (int i = 0; i < dirStructure.Length; i++)
+                    // String[] dirStructure = Directory.GetFiles(f.FullName);
+                    // String fileType;
+                    DirectoryInfo di = new DirectoryInfo(f.FullName);
+                    foreach(FileInfo fi in di.GetFiles())
                     {
-                        if (dirStructure[i].IndexOf(".") != -1)
+                        dout.WriteLine(fi.Name);
+                    }
+                   // for (int i = 0; i < dirStructure.Length; i++)
+                   // {
+                        /**if (dirStructure[i].IndexOf(".") != -1)
                         {
                             fileType = "-";
                         }   
                         else
                         {
                             fileType = "d";
-                        }
-                        dout.WriteLine(fileType + dirStructure[i]);
-                    }
+                        }**/
+                    //    dout.WriteLine(dirStructure[i].);
+                  //  }
                 }
                 dout.Close();
                 dsocket.Close();
@@ -483,12 +488,12 @@ namespace csftpserver
                             requestfile);
                         dsocket = new TcpClient(remoteHost, remotePort);
                         BufferedStream fin = new BufferedStream(new FileStream(requestfile, FileMode.Open, FileAccess.Read));
-                        StreamWriter dout = new StreamWriter(dsocket.GetStream());
+                        NetworkStream dout =dsocket.GetStream();
                         byte[] buf = new byte[1024];
                         int l = 0;
-                        while ((fin.Read(buf, 0, 1024)) != -1)
+                        while ( (l = fin.Read(buf, 0, 1024)) != 0)
                         {
-                            dout.Write(Encoding.ASCII.GetChars(buf), 0, 1);
+                            dout.Write(buf, 0, l);
                         }
                         fin.Close();
                         dout.Close();
@@ -558,9 +563,9 @@ namespace csftpserver
                     BufferedStream din = new BufferedStream(dsocket.GetStream());
                     byte[] buf = new byte[1024];
                     int l = 0;
-                    while ((din.Read(buf, 0, 1024)) != -1)
+                    while ((l = din.Read(buf, 0, 1024)) != 0)
                     {
-                        fout.Write(buf, 0, 1);
+                        fout.Write(buf, 0, l);
                     }
                     din.Close();
                     fout.Close();
