@@ -44,6 +44,8 @@ namespace csftpserver
         int remotePort = 0;
         String dir = FtpServer.initDir;
         String rootdir = "c:/";
+        String currentFileName = "";
+        String newFileName = "";
         int state = 0;
         String reply;
         StreamWriter out_Renamed;
@@ -152,6 +154,8 @@ namespace csftpserver
                 i = 33;
             if (cmd.Equals("OPTS"))
                 i = 34;
+            if (cmd.Equals("SIZE"))
+                i = 35;
             return i;
         } // parseInput() end
 
@@ -700,6 +704,82 @@ namespace csftpserver
             return false;
         } //commandDELE() end
 
+        internal bool commandRNFR()
+        {
+            int i = validatePath(param);
+            if (i == 0)
+            {
+                reply = "550 Request action not taken";
+                return false;
+            }
+            if (i == 1)
+            {
+                FileInfo f = new FileInfo(param);
+                bool tmpBool;
+                if (File.Exists(f.FullName))
+                {
+                    currentFileName = f.FullName;
+                    tmpBool = true;
+                }
+                //else if (Directory.Exists(f.FullName))
+                //{
+                //    Directory.Delete(f.FullName);
+                //    tmpBool = true;
+                //}
+                else
+                {
+                    tmpBool = false;
+                }
+                bool generatedAux = tmpBool;
+            }
+            if (i == 2)
+            {
+                FileInfo f = new FileInfo(addTail(dir) + param);
+                bool tmpBool2;
+                if (File.Exists(f.FullName))
+                {
+                    currentFileName = f.FullName;
+                    tmpBool2 = true;
+                }
+                //else if (Directory.Exists(f.FullName))
+                //{
+                //    Directory.Delete(f.FullName);
+                //    tmpBool2 = true;
+                //}
+                else
+                {
+                    tmpBool2 = false;
+                }
+                bool generatedAux2 = tmpBool2;
+            }
+
+            reply = "250 Request file action ok, complete.";
+            return false;
+        } //commandRNFR() end
+
+        internal bool commandRNTO()
+        {
+            if (param.Equals(""))
+            {
+                reply = "553 Request action not taken: filename is invalid";
+                return false;
+            }
+            newFileName = addTail(dir) + param;
+            try
+            {
+                File.Move(currentFileName, newFileName);
+                reply = "250 Request file action ok, complete.";                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "553 Request action not taken: filename is invalid";
+                return false;
+            }
+            finally { };
+            return false;
+        } //commandRNTO() end
+
         internal bool commandMKD() // 创建目录
         {
             String s1 = param.ToLower();
@@ -745,6 +825,34 @@ namespace csftpserver
 
             return false;
         } //commandMKD() end
+
+        internal bool commandSIZE() // 获取文件长度
+        {
+            requestfile = param;
+            try
+            {
+                Console.WriteLine(remoteHost);
+                dsocket = new TcpClient(remoteHost, remotePort);
+                StreamWriter temp_writer;
+                temp_writer = new StreamWriter(dsocket.GetStream(), Encoding.Default);
+                StreamWriter dout = temp_writer;
+                out_Renamed.WriteLine("150 Opening ASCII mode data connection for " +
+                    requestfile);
+                FileInfo f = new FileInfo(requestfile);
+                dout.WriteLine(f.Length.ToString());
+                dout.Close();
+                dsocket.Close();
+                reply = "226 Transfer complete !";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "451 Requested action aborted: local error in processing";
+                return false;
+            }
+            finally { }
+            return false;
+        }
 
 
         internal String addTail(String s) // 增加尾缀"/"
@@ -819,21 +927,28 @@ namespace csftpserver
                                             break;
 
                                         case 27:
+                                        case 28: // commandNLIS
                                             finished = commandLIST();
                                             break;
 
                                         case 11:
-                                            finished = commandTYPE();
-                                            Console.WriteLine("TYPE");
+                                            finished = commandTYPE();                                            
                                             break;
 
                                         case 14:
                                             finished = commandRETR();
-                                            Console.WriteLine("RETR");
                                             break;
 
                                         case 15:
                                             finished = commandSTOR();
+                                            break;
+
+                                        case 20:
+                                            finished = commandRNFR();
+                                            break;
+
+                                        case 21:
+                                            finished = commandRNTO();
                                             break;
 
                                         case 26:
@@ -855,6 +970,10 @@ namespace csftpserver
 
                                         case 25:
                                             finished = commandMKD();
+                                            break;
+
+                                        case 35:
+                                            finished = commandSIZE();
                                             break;
                                     } // switch(parseResult) end
                                 } // case FtpState.FS_LOGIN: end
@@ -1184,7 +1303,7 @@ namespace csftpserver
                 tcpListener = new TcpListener(IPAddress.Any, 21);
                 tcpListener.Start();
                 TcpListener s = tcpListener;
-                Console.WriteLine("I'm listening.");
+                //Console.WriteLine("I'm listening.");
                 while(true)
                 {
                     TcpClient incoming = s.AcceptTcpClient();

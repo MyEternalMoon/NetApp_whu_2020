@@ -138,6 +138,7 @@
             this.renameBtn.TabIndex = 12;
             this.renameBtn.Text = "重命名";
             this.renameBtn.UseVisualStyleBackColor = false;
+            this.renameBtn.Click += new System.EventHandler(this.renameBtn_Click);
             // 
             // downloadBtn
             // 

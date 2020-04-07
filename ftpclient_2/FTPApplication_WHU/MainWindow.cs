@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
 using System.Net;
 
 namespace FTPApplication_WHU
@@ -155,10 +154,10 @@ namespace FTPApplication_WHU
                 while (line != null)
                 {
                     result.Append(line);
-                    result.Append("n");
+                    result.Append("\n");
                     line = reader.ReadLine();
                 }
-                result.Remove(result.ToString().LastIndexOf("n"), 1);
+                result.Remove(result.ToString().LastIndexOf("\n"), 1);
                 reader.Close();
                 response.Close();
                 return result.ToString().Split('\n');
@@ -218,33 +217,33 @@ namespace FTPApplication_WHU
             }
         }
 
-        private long GetFileSize(string filename)//获取文件长度方法
+        private string GetFileSize(string filename)//获取文件长度方法
         {
+            string fileSize;
             FtpWebRequest reqFTP;
-            long fileSize = 0;
             try
             {
                 reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + this.parent.ftpServerIP + "/" + filename));
-                reqFTP.Method = WebRequestMethods.Ftp.GetFileSize;
                 reqFTP.UseBinary = true;
-                reqFTP.UsePassive = false;
                 reqFTP.Credentials = new NetworkCredential(this.parent.ftpUserID, this.parent.ftpPassword);
-                FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
-                Stream ftpStream = response.GetResponseStream();
-                fileSize = response.ContentLength;
-
-                ftpStream.Close();
+                reqFTP.Method = WebRequestMethods.Ftp.GetFileSize;
+                reqFTP.UsePassive = false;
+                WebResponse response = reqFTP.GetResponse();
+                StreamReader reader = new StreamReader(response.GetResponseStream());
+                fileSize = reader.ReadLine();
+                reader.Close();
                 response.Close();
+                return fileSize;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return null;
             }
             finally
             {
 
             }
-            return fileSize;
         }
 
         private void Rename(string currentFilename, string newFilename)//重命名方法
@@ -393,6 +392,31 @@ namespace FTPApplication_WHU
                 MessageBox.Show("请选择下载的文件！");
             }
         }
+
+
+        private void renameBtn_Click(object sender, EventArgs e)
+        {
+            string currentFileName = fileListBox.SelectedItem.ToString();
+            string newFileName = passwordBox.Text.ToString();
+            if (currentFileName != string.Empty && newFileName != string.Empty)
+            {
+                Rename(currentFileName, newFileName);
+            }
+        }
+
+        //private void checkLengthBtn_Click(object sender, EventArgs e)
+        //{
+        //    string fileName = fileListBox.SelectedItem.ToString();
+        //    if (fileName != string.Empty)
+        //    {
+        //        string size = GetFileSize(fileName);
+        //        MessageBox.Show(size + "字节");
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("请选择文件！");
+        //    }           
+        //}
         // 返回到父界面（可以修改IP和用户信息), 同时隐藏该界面
         private void backBtn_Click(object sender, EventArgs e)
         {
