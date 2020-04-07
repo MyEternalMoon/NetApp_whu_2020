@@ -57,7 +57,7 @@ namespace FTPApplication_WHU
             ftpServerIP = IPBox.Text.Trim();
             ftpUserID = IDBox.Text.Trim();
             ftpPassword = passwordBox.Text;
-
+            bool success = false;
             if (ftpUserID == "test")
             {
                 // 进入测试模式，不需要输入用户名和密码就可以对界面进行调试
@@ -65,29 +65,34 @@ namespace FTPApplication_WHU
             else
             {
                 // 必须要验证成功，才能够进入到主界面
+                FtpWebRequest reqFTP;
                 try
                 {
-                    Uri u = new Uri("ftp://" + ftpServerIP + "/");
-                    FtpWebRequest reqFTP = (FtpWebRequest)FtpWebRequest.Create(u);
-
-                    reqFTP.Method = WebRequestMethods.Ftp.ListDirectory;
+                    reqFTP = (FtpWebRequest)FtpWebRequest.Create(new Uri("ftp://" + ftpServerIP + "/"));
                     reqFTP.UseBinary = true;
-                    reqFTP.UsePassive = false;
                     reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
-                    FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
+                    reqFTP.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                    reqFTP.UsePassive = false;
+                    WebResponse response = reqFTP.GetResponse();
+                    response.Close();
+                    success = true;
                 }
                 catch
                 {
                     MessageBox.Show("无法连接Ftp服务器\n要仅测试界面，请在用户名输入test.");
-                    return;
+                    success = false;
                     // 如果连接失败，是无法进入到主界面的
                 }
-            }
-            if (child == null)
+              }
+            if (success)
             {
-                child = new MainWindow(this);
-            }
-            child.Show();
+                if (child == null)
+                {
+                    child = new MainWindow(this);
+                }
+                child.Show();
+             } 
+            
         }
 
 
