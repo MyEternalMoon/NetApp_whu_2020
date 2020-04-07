@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Resources;
+using System.Net;
 
 
 namespace FTPApplication_WHU
@@ -29,6 +30,7 @@ namespace FTPApplication_WHU
         public string ftpServerIP;
         public string ftpUserID;
         public string ftpPassword;
+        private MainWindow child;
 
         Point mouseOff;//用于获取鼠标位置
         bool leftFlag;//移动标识
@@ -38,6 +40,7 @@ namespace FTPApplication_WHU
             this.IPBox.Text = "127.0.0.1";
             // ResourceManager rm = new ResourceManager("My_resources", typeof(Resources).Assembly);
             this.hideUser(true);
+            this.StartPosition = FormStartPosition.CenterScreen;
         }     
 
         private void Form1_Load(object sender, EventArgs e)
@@ -50,20 +53,41 @@ namespace FTPApplication_WHU
             /**
              * Try to connect to the server
              **/
-
-            ftpServerIP = IPBox.Text;
-            ftpUserID = IDBox.Text;
+            // 我在想要不要这里就测试一下是否能连接服务器
+            ftpServerIP = IPBox.Text.Trim();
+            ftpUserID = IDBox.Text.Trim();
             ftpPassword = passwordBox.Text;
 
-          //  if (ftpUserID.Equals("testtest"))
+            if (ftpUserID == "test")
             {
-                // just for test.
-                // 如果连接成功建立了，就把返回的那个ftpRequest对象放在this的域内，然后把this传递给MainForm
-                // 这样就可以继续使用了
-                IDBox.Text = "OK";
-                MainWindow mainform = new MainWindow(this);
-                mainform.Show();
+                // 进入测试模式，不需要输入用户名和密码就可以对界面进行调试
             }
+            else
+            {
+                // 必须要验证成功，才能够进入到主界面
+                try
+                {
+                    Uri u = new Uri("ftp://" + ftpServerIP + "/");
+                    FtpWebRequest reqFTP = (FtpWebRequest)FtpWebRequest.Create(u);
+
+                    reqFTP.Method = WebRequestMethods.Ftp.ListDirectory;
+                    reqFTP.UseBinary = true;
+                    reqFTP.UsePassive = false;
+                    reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
+                    FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
+                }
+                catch
+                {
+                    MessageBox.Show("无法连接Ftp服务器\n要仅测试界面，请在用户名输入test.");
+                    return;
+                    // 如果连接失败，是无法进入到主界面的
+                }
+            }
+            if (child == null)
+            {
+                child = new MainWindow(this);
+            }
+            child.Show();
         }
 
 
@@ -180,19 +204,5 @@ namespace FTPApplication_WHU
             this.hideUser(true);
         }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void IDBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
