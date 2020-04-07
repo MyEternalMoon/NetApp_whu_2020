@@ -44,6 +44,8 @@ namespace csftpserver
         int remotePort = 0;
         String dir = FtpServer.initDir;
         String rootdir = "c:/";
+        String currentFileName = "";
+        String newFileName = "";
         int state = 0;
         String reply;
         StreamWriter out_Renamed;
@@ -702,6 +704,82 @@ namespace csftpserver
             return false;
         } //commandDELE() end
 
+        internal bool commandRNFR()
+        {
+            int i = validatePath(param);
+            if (i == 0)
+            {
+                reply = "550 Request action not taken";
+                return false;
+            }
+            if (i == 1)
+            {
+                FileInfo f = new FileInfo(param);
+                bool tmpBool;
+                if (File.Exists(f.FullName))
+                {
+                    currentFileName = f.FullName;
+                    tmpBool = true;
+                }
+                //else if (Directory.Exists(f.FullName))
+                //{
+                //    Directory.Delete(f.FullName);
+                //    tmpBool = true;
+                //}
+                else
+                {
+                    tmpBool = false;
+                }
+                bool generatedAux = tmpBool;
+            }
+            if (i == 2)
+            {
+                FileInfo f = new FileInfo(addTail(dir) + param);
+                bool tmpBool2;
+                if (File.Exists(f.FullName))
+                {
+                    currentFileName = f.FullName;
+                    tmpBool2 = true;
+                }
+                //else if (Directory.Exists(f.FullName))
+                //{
+                //    Directory.Delete(f.FullName);
+                //    tmpBool2 = true;
+                //}
+                else
+                {
+                    tmpBool2 = false;
+                }
+                bool generatedAux2 = tmpBool2;
+            }
+
+            reply = "250 Request file action ok, complete.";
+            return false;
+        } //commandRNFR() end
+
+        internal bool commandRNTO()
+        {
+            if (param.Equals(""))
+            {
+                reply = "553 Request action not taken: filename is invalid";
+                return false;
+            }
+            newFileName = addTail(dir) + param;
+            try
+            {
+                File.Move(currentFileName, newFileName);
+                reply = "250 Request file action ok, complete.";                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                reply = "553 Request action not taken: filename is invalid";
+                return false;
+            }
+            finally { };
+            return false;
+        } //commandRNTO() end
+
         internal bool commandMKD() // 创建目录
         {
             String s1 = param.ToLower();
@@ -863,6 +941,14 @@ namespace csftpserver
 
                                         case 15:
                                             finished = commandSTOR();
+                                            break;
+
+                                        case 20:
+                                            finished = commandRNFR();
+                                            break;
+
+                                        case 21:
+                                            finished = commandRNTO();
                                             break;
 
                                         case 26:

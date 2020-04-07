@@ -393,6 +393,17 @@ namespace FTPApplication_WHU
             }
         }
 
+
+        private void renameBtn_Click(object sender, EventArgs e)
+        {
+            string currentFileName = fileListBox.SelectedItem.ToString();
+            string newFileName = passwordBox.Text.ToString();
+            if (currentFileName != string.Empty && newFileName != string.Empty)
+            {
+                Rename(currentFileName, newFileName);
+            }
+        }
+
         //private void checkLengthBtn_Click(object sender, EventArgs e)
         //{
         //    string fileName = fileListBox.SelectedItem.ToString();
