@@ -61,6 +61,7 @@ namespace FTPApplication_WHU
             if (ftpUserID == "test")
             {
                 // 进入测试模式，不需要输入用户名和密码就可以对界面进行调试
+                success = true;
             }
             else
             {

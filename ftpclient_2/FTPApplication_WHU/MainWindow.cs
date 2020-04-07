@@ -23,6 +23,17 @@ namespace FTPApplication_WHU
             this.parent.Hide();
             this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
+
+            if (this.parent.ftpUserID == "test")
+            {
+                this.fileListBox.Items.Add("测试用例1");
+                this.fileListBox.Items.Add("测试用例2");
+                this.fileListBox.Items.Add("测试用例3");
+            }
+            else
+            {
+                this.fileListBox.Items.Clear();
+            }
         }
         private void Upload(string filename)//上传方法
         {
@@ -56,14 +67,11 @@ namespace FTPApplication_WHU
                 }
                 strm.Close();
                 fs.Close();
+                MessageBox.Show("上传成功！");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "上传出错");
-            }
-            finally
-            {
-
             }
         }
 
@@ -88,14 +96,12 @@ namespace FTPApplication_WHU
                 sr.Close();
                 datastream.Close();
                 response.Close();
+                MessageBox.Show("删除成功!");
+
             }
             catch
             {
-
-            }
-            finally
-            {
-
+                MessageBox.Show("删除失败，刷新或稍后再试!");
             }
         }
         public string[] GetFileList()//获取文件列表方法
@@ -131,10 +137,7 @@ namespace FTPApplication_WHU
                 downloadFiles = null;
                 return downloadFiles;
             }
-            finally
-            {
 
-            }
         }
 
         private string[] GetFilesDatailList()//获取文件详细信息列表
@@ -164,13 +167,9 @@ namespace FTPApplication_WHU
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
                 downloadFiles = null;
                 return downloadFiles;
-            }
-            finally
-            {
-
             }
         }
 
@@ -211,10 +210,6 @@ namespace FTPApplication_WHU
             {
 
             }
-            finally
-            {
-
-            }
         }
 
         private string GetFileSize(string filename)//获取文件长度方法
@@ -240,10 +235,7 @@ namespace FTPApplication_WHU
                 MessageBox.Show(ex.Message);
                 return null;
             }
-            finally
-            {
 
-            }
         }
 
         private void Rename(string currentFilename, string newFilename)//重命名方法
@@ -262,15 +254,13 @@ namespace FTPApplication_WHU
 
                 ftpStream.Close();
                 response.Close();
+                MessageBox.Show("重命名成功!");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            finally
-            {
 
-            }
         }
 
 
@@ -315,7 +305,7 @@ namespace FTPApplication_WHU
              //绘制选中时要显示的蓝色边框。
                 Color c = SystemColors.ControlDark;
                 foreColor = Color.Black; //Color.FromArgb(6, 82, 121);
-                font = new Font("黑体",12, FontStyle.Bold);
+                font = new Font("黑体",11, FontStyle.Bold);
                 e.Graphics.FillRectangle(new SolidBrush(c), e.Bounds);//绘制背景
             }
             else
@@ -343,10 +333,21 @@ namespace FTPApplication_WHU
         // 删除
         private void deleteBtn_Click(object sender, EventArgs e)
         {
-            string fileName = fileListBox.SelectedItem.ToString();
-            if (fileName != string.Empty)
+            if (fileListBox.SelectedItem == null)
             {
-                DeleteFTP(fileName);
+                MessageBox.Show("请选择你需要删除的文件!");
+            }
+            else
+            {
+                string fileName = fileListBox.SelectedItem.ToString();
+                DialogResult dr = MessageBox.Show($"确认要删除文件{fileName}吗?", "确认删除",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (dr == DialogResult.OK)
+                {
+                    DeleteFTP(fileName);
+                    getFileBtn_Click(null, null);
+
+                }
             }
         }
         // 获取文件列表
@@ -373,6 +374,8 @@ namespace FTPApplication_WHU
             if (opFilDIg.ShowDialog() == DialogResult.OK)
             {
                 Upload(opFilDIg.FileName);
+                getFileBtn_Click(null, null);
+
             }
         }
         // 下载文件
@@ -396,12 +399,30 @@ namespace FTPApplication_WHU
 
         private void renameBtn_Click(object sender, EventArgs e)
         {
-            string currentFileName = fileListBox.SelectedItem.ToString();
-            string newFileName = passwordBox.Text.ToString();
-            if (currentFileName != string.Empty && newFileName != string.Empty)
+            if (fileListBox.SelectedItem == null)
             {
-                Rename(currentFileName, newFileName);
+                MessageBox.Show("必须选中你想要重命名的文件！");
             }
+            else
+            {
+                string currentFileName = fileListBox.SelectedItem.ToString();
+                string newFileName = filenameBox.Text.ToString();
+                DialogResult dr = MessageBox.Show($"确认要重命名文件{currentFileName}->{newFileName}吗?", "确认重命名",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (dr == DialogResult.OK)
+                {
+                    if (newFileName.Trim() != "")
+                    {
+                        Rename(currentFileName, newFileName);
+                        getFileBtn_Click(null, null);
+                    }
+                    else
+                    {
+                        MessageBox.Show("重命名不能为空!");
+                    }
+                }           
+            }
+            
         }
 
         //private void checkLengthBtn_Click(object sender, EventArgs e)
@@ -451,6 +472,20 @@ namespace FTPApplication_WHU
         {
             this.closeBtn.BackgroundImage = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject("close");
 
+        }
+        // 当重新选中文件时，把文件名填入filenamebox内（默认不重命名)
+        private void fileListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+            if (fileListBox.SelectedItem != null)
+            {
+                filenameBox.Text = fileListBox.SelectedItem.ToString();
+            }
+        }
+
+        private void checkLengthBtn_Click(object sender, EventArgs e)
+        {
+            GetFilesDatailList();
         }
     }
 }

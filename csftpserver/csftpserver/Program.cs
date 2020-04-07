@@ -413,18 +413,7 @@ namespace csftpserver
                     {
                         dout.WriteLine(fi.Name);
                     }
-                   // for (int i = 0; i < dirStructure.Length; i++)
-                   // {
-                        /**if (dirStructure[i].IndexOf(".") != -1)
-                        {
-                            fileType = "-";
-                        }   
-                        else
-                        {
-                            fileType = "d";
-                        }**/
-                    //    dout.WriteLine(dirStructure[i].);
-                  //  }
+
                 }
                 dout.Close();
                 dsocket.Close();
