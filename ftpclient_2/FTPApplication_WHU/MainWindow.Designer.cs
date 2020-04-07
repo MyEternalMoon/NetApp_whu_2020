@@ -38,12 +38,13 @@
             this.downloadBtn = new System.Windows.Forms.Button();
             this.deleteBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.passwordBox = new System.Windows.Forms.TextBox();
+            this.filenameBox = new System.Windows.Forms.TextBox();
             this.getFileBtn = new System.Windows.Forms.Button();
             this.closeBtn = new System.Windows.Forms.Button();
             this.backBtn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // fileListBox
@@ -54,11 +55,6 @@
             this.fileListBox.Font = new System.Drawing.Font("等线", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.fileListBox.FormattingEnabled = true;
             this.fileListBox.ItemHeight = 18;
-            this.fileListBox.Items.AddRange(new object[] {
-            "戴季成",
-            "韩金伟",
-            "杨捷",
-            "林博韬"});
             this.fileListBox.Location = new System.Drawing.Point(0, 63);
             this.fileListBox.Margin = new System.Windows.Forms.Padding(10);
             this.fileListBox.Name = "fileListBox";
@@ -66,6 +62,7 @@
             this.fileListBox.TabIndex = 1;
             this.fileListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.fileListBox_DrawItem);
             this.fileListBox.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.fileListBox_MeasureItem);
+            this.fileListBox.SelectedIndexChanged += new System.EventHandler(this.fileListBox_SelectedIndexChanged);
             // 
             // line1
             // 
@@ -103,11 +100,14 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("等线 Light", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(194, 417);
+            this.label2.Location = new System.Drawing.Point(194, 410);
+            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.label2.Name = "label2";
+            this.label2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.label2.Size = new System.Drawing.Size(445, 30);
             this.label2.TabIndex = 9;
             this.label2.Text = "显示文件长度";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // checkLengthBtn
             // 
@@ -123,6 +123,7 @@
             this.checkLengthBtn.TabIndex = 10;
             this.checkLengthBtn.Text = "显示长度";
             this.checkLengthBtn.UseVisualStyleBackColor = false;
+            this.checkLengthBtn.Click += new System.EventHandler(this.checkLengthBtn_Click);
             // 
             // renameBtn
             // 
@@ -187,16 +188,15 @@
             this.label4.Text = "我的文件";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // passwordBox
+            // filenameBox
             // 
-            this.passwordBox.BackColor = System.Drawing.Color.White;
-            this.passwordBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.passwordBox.Font = new System.Drawing.Font("等线 Light", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.passwordBox.Location = new System.Drawing.Point(198, 456);
-            this.passwordBox.Name = "passwordBox";
-            this.passwordBox.Size = new System.Drawing.Size(348, 20);
-            this.passwordBox.TabIndex = 16;
-            this.passwordBox.Text = "文件重命名";
+            this.filenameBox.BackColor = System.Drawing.Color.White;
+            this.filenameBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.filenameBox.Font = new System.Drawing.Font("等线 Light", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.filenameBox.Location = new System.Drawing.Point(203, 458);
+            this.filenameBox.Name = "filenameBox";
+            this.filenameBox.Size = new System.Drawing.Size(360, 20);
+            this.filenameBox.TabIndex = 16;
             // 
             // getFileBtn
             // 
@@ -272,16 +272,25 @@
             this.InfoLabel.Text = "Welcome";
             this.InfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label5
+            // 
+            this.label5.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.label5.Location = new System.Drawing.Point(203, 478);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(360, 1);
+            this.label5.TabIndex = 21;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(760, 500);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.backBtn);
             this.Controls.Add(this.getFileBtn);
-            this.Controls.Add(this.passwordBox);
+            this.Controls.Add(this.filenameBox);
             this.Controls.Add(this.deleteBtn);
             this.Controls.Add(this.downloadBtn);
             this.Controls.Add(this.renameBtn);
@@ -320,11 +329,12 @@
         private System.Windows.Forms.Button downloadBtn;
         private System.Windows.Forms.Button deleteBtn;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox passwordBox;
+        private System.Windows.Forms.TextBox filenameBox;
         private System.Windows.Forms.Button getFileBtn;
         private System.Windows.Forms.Button backBtn;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label InfoLabel;
+        private System.Windows.Forms.Label label5;
     }
 
 }
