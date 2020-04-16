@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
+
 
 namespace csftpserver
 {
@@ -16,6 +17,7 @@ namespace csftpserver
         internal String user;//用户名
         internal String password;//密码
         internal String workDir;//主目录
+        
     }
 
     class FtpState//FTP的各个状态标志
@@ -409,7 +411,10 @@ namespace csftpserver
                     DirectoryInfo di = new DirectoryInfo(f.FullName);
                     foreach (FileInfo fi in di.GetFiles())
                     {
-                        dout.WriteLine(fi.Name + "\t" + fi.LastWriteTime.ToString() + "\t" + fi.Length.ToString());
+                        //format: 
+                        //filename  lastwritetime length extension 
+                        dout.WriteLine(fi.Name + "\t" + fi.LastWriteTime.ToString() + 
+                            "\t" + fi.Length.ToString() + "\t"+ fi.Extension.ToString()+"\t");
                     }
                 }
                 dout.Close();
@@ -1426,6 +1431,59 @@ namespace csftpserver
             initDir = "c:/";
             FtpServer ftpServer = new FtpServer();
             Console.WriteLine("#");
+            
+        }
+    }
+}
+
+public class ImageClass
+{
+    public Image ResourceImage;
+    private int ImageWidth;
+    private int ImageHeight;
+
+    public string ErrMessage;
+
+    /// <summary>   
+    /// 类的构造函数   
+    /// </summary>   
+    /// <param name="ImageFileName">图片文件的全路径名称</param>   
+    public ImageClass(string ImageFileName)
+    {
+        ResourceImage = Image.FromFile(ImageFileName);
+        ErrMessage = "";
+    }
+
+    public bool ThumbnailCallback()
+    {
+        return false;
+    }
+
+    /// <summary>   
+    /// 生成缩略图重载方法1，返回缩略图的Image对象   
+    /// </summary>   
+    /// <param name="Width">缩略图的宽度</param>   
+    /// <param name="Height">缩略图的高度</param>   
+    /// <returns>缩略图的Image对象</returns>   
+    public Image GetReducedImage(double Percent)
+    {
+        try
+        {
+            Image ReducedImage;
+
+            Image.GetThumbnailImageAbort callb = new Image.GetThumbnailImageAbort(ThumbnailCallback);
+
+            ImageWidth = Convert.ToInt32(ResourceImage.Width * Percent);
+            ImageHeight = Convert.ToInt32(ResourceImage.Width * Percent);
+
+            ReducedImage = ResourceImage.GetThumbnailImage(ImageWidth, ImageHeight, callb, IntPtr.Zero);
+
+            return ReducedImage;
+        }
+        catch (Exception e)
+        {
+            ErrMessage = e.Message;
+            return null;
         }
     }
 }

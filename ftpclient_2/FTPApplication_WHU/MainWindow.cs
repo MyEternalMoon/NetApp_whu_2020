@@ -140,9 +140,10 @@ namespace FTPApplication_WHU
 
         }
 
-        private string[] GetFilesDatailList()//获取文件详细信息列表
+        private string[] GetFilesDatailList(string filename)//获取文件详细信息列表
         {
-            string[] downloadFiles;
+            // if failed ,return null info.
+            string[] ret = null;
             try
             {
                 StringBuilder result = new StringBuilder();
@@ -156,20 +157,23 @@ namespace FTPApplication_WHU
                 string line = reader.ReadLine();
                 while (line != null)
                 {
-                    result.Append(line);
-                    result.Append("\n");
-                    line = reader.ReadLine();
+                    string[] info = line.Split('\t');
+                    if (info[0] == filename)
+                    {
+                        ret = info;
+                        break;
+                    }
+                    else
+                    {
+                        line = reader.ReadLine();
+                    }                   
                 }
-                result.Remove(result.ToString().LastIndexOf("\n"), 1);
-                reader.Close();
-                response.Close();
-                return result.ToString().Split('\n');
+                return ret;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                downloadFiles = null;
-                return downloadFiles;
+                return ret;
             }
         }
 
@@ -381,6 +385,11 @@ namespace FTPApplication_WHU
         // 下载文件
         private void downloadBtn_Click(object sender, EventArgs e)
         {
+            if (fileListBox.SelectedItem == null)
+            {
+                MessageBox.Show("请选择需要下载的文件!");
+                return;
+            }
             FolderBrowserDialog fldDlg = new FolderBrowserDialog();
             string fileName = fileListBox.SelectedItem.ToString();
             if (fileName != string.Empty)
@@ -479,13 +488,51 @@ namespace FTPApplication_WHU
            
             if (fileListBox.SelectedItem != null)
             {
-                filenameBox.Text = fileListBox.SelectedItem.ToString();
+                string filename = fileListBox.SelectedItem.ToString();
+                filenameBox.Text = filename;
+                string[] details = GetFilesDatailList(filename);
+                titleLabel.Text = filename;
+                if (details == null)
+                {
+                    DetailLabel.Text = "无法获取文件的详细信息！请重试";
+                }
+                else
+                {
+                    DetailLabel.Text = $"创建日期: {details[1]}\n文件大小: {details[2]}KB\n文件类型: {details[3]}";
+                }
             }
         }
 
-        private void checkLengthBtn_Click(object sender, EventArgs e)
+        private void DetailLabel_Click(object sender, EventArgs e)
         {
-            GetFilesDatailList();
+
+        }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void detail_Click(object sender, EventArgs e)
+        {
+            if (fileListBox.SelectedItem == null)
+            {
+                MessageBox.Show("请选择文件!");
+            }
+            else
+            {
+                string filename = fileListBox.SelectedItem.ToString();
+                string[] details = GetFilesDatailList(filename);
+                if (details == null)
+                {
+                    MessageBox.Show("无法获取文件的详细信息！请重试");
+                }
+                else
+                {
+                    MessageBox.Show(
+                        $"Raw response fropm server to {parent.ftpUserID}:\n{details[0]}\n{details[1]}\n{details[2]}\n{details[3]}");
+                }
+            }
         }
     }
 }

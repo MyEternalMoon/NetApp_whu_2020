@@ -31,9 +31,7 @@
             this.fileListBox = new System.Windows.Forms.ListBox();
             this.line1 = new System.Windows.Forms.Label();
             this.uploadBtn = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.checkLengthBtn = new System.Windows.Forms.Button();
+            this.DetailLabel = new System.Windows.Forms.Label();
             this.renameBtn = new System.Windows.Forms.Button();
             this.downloadBtn = new System.Windows.Forms.Button();
             this.deleteBtn = new System.Windows.Forms.Button();
@@ -45,6 +43,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.InfoLabel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.titleLabel = new System.Windows.Forms.Label();
+            this.detailButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.ImageLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // fileListBox
@@ -54,11 +56,12 @@
             this.fileListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.fileListBox.Font = new System.Drawing.Font("等线", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.fileListBox.FormattingEnabled = true;
-            this.fileListBox.ItemHeight = 18;
+            this.fileListBox.IntegralHeight = false;
+            this.fileListBox.ItemHeight = 16;
             this.fileListBox.Location = new System.Drawing.Point(0, 63);
             this.fileListBox.Margin = new System.Windows.Forms.Padding(10);
             this.fileListBox.Name = "fileListBox";
-            this.fileListBox.Size = new System.Drawing.Size(190, 438);
+            this.fileListBox.Size = new System.Drawing.Size(225, 380);
             this.fileListBox.TabIndex = 1;
             this.fileListBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.fileListBox_DrawItem);
             this.fileListBox.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.fileListBox_MeasureItem);
@@ -67,9 +70,9 @@
             // line1
             // 
             this.line1.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.line1.Location = new System.Drawing.Point(195, 54);
+            this.line1.Location = new System.Drawing.Point(230, 54);
             this.line1.Name = "line1";
-            this.line1.Size = new System.Drawing.Size(560, 1);
+            this.line1.Size = new System.Drawing.Size(525, 1);
             this.line1.TabIndex = 2;
             // 
             // uploadBtn
@@ -80,7 +83,7 @@
             this.uploadBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.uploadBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.uploadBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.uploadBtn.Location = new System.Drawing.Point(200, 10);
+            this.uploadBtn.Location = new System.Drawing.Point(235, 10);
             this.uploadBtn.Name = "uploadBtn";
             this.uploadBtn.Size = new System.Drawing.Size(90, 35);
             this.uploadBtn.TabIndex = 7;
@@ -88,42 +91,15 @@
             this.uploadBtn.UseVisualStyleBackColor = false;
             this.uploadBtn.Click += new System.EventHandler(this.uploadBtn_Click);
             // 
-            // label1
+            // DetailLabel
             // 
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(198, 72);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(552, 269);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "显示文件细节\r\n。。。\r\n。。。\r\n。。。\r\n";
-            // 
-            // label2
-            // 
-            this.label2.Font = new System.Drawing.Font("等线 Light", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(194, 410);
-            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.label2.Size = new System.Drawing.Size(445, 30);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "显示文件长度";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkLengthBtn
-            // 
-            this.checkLengthBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(111)))), ((int)(((byte)(255)))));
-            this.checkLengthBtn.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.checkLengthBtn.FlatAppearance.BorderSize = 0;
-            this.checkLengthBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkLengthBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkLengthBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.checkLengthBtn.Location = new System.Drawing.Point(651, 410);
-            this.checkLengthBtn.Name = "checkLengthBtn";
-            this.checkLengthBtn.Size = new System.Drawing.Size(90, 35);
-            this.checkLengthBtn.TabIndex = 10;
-            this.checkLengthBtn.Text = "显示长度";
-            this.checkLengthBtn.UseVisualStyleBackColor = false;
-            this.checkLengthBtn.Click += new System.EventHandler(this.checkLengthBtn_Click);
+            this.DetailLabel.Font = new System.Drawing.Font("微软雅黑", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DetailLabel.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.DetailLabel.Location = new System.Drawing.Point(240, 125);
+            this.DetailLabel.Name = "DetailLabel";
+            this.DetailLabel.Size = new System.Drawing.Size(506, 174);
+            this.DetailLabel.TabIndex = 8;
+            this.DetailLabel.Click += new System.EventHandler(this.DetailLabel_Click);
             // 
             // renameBtn
             // 
@@ -133,7 +109,7 @@
             this.renameBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.renameBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.renameBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.renameBtn.Location = new System.Drawing.Point(651, 451);
+            this.renameBtn.Location = new System.Drawing.Point(656, 451);
             this.renameBtn.Name = "renameBtn";
             this.renameBtn.Size = new System.Drawing.Size(90, 35);
             this.renameBtn.TabIndex = 12;
@@ -149,7 +125,7 @@
             this.downloadBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.downloadBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.downloadBtn.Location = new System.Drawing.Point(15, 451);
+            this.downloadBtn.Location = new System.Drawing.Point(80, 451);
             this.downloadBtn.Name = "downloadBtn";
             this.downloadBtn.Size = new System.Drawing.Size(65, 35);
             this.downloadBtn.TabIndex = 13;
@@ -165,7 +141,7 @@
             this.deleteBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.deleteBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.deleteBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.deleteBtn.Location = new System.Drawing.Point(110, 451);
+            this.deleteBtn.Location = new System.Drawing.Point(150, 451);
             this.deleteBtn.Name = "deleteBtn";
             this.deleteBtn.Size = new System.Drawing.Size(65, 35);
             this.deleteBtn.TabIndex = 14;
@@ -183,7 +159,7 @@
             this.label4.Location = new System.Drawing.Point(0, 0);
             this.label4.Name = "label4";
             this.label4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label4.Size = new System.Drawing.Size(190, 55);
+            this.label4.Size = new System.Drawing.Size(225, 55);
             this.label4.TabIndex = 15;
             this.label4.Text = "我的文件";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -193,7 +169,7 @@
             this.filenameBox.BackColor = System.Drawing.Color.White;
             this.filenameBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.filenameBox.Font = new System.Drawing.Font("等线 Light", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.filenameBox.Location = new System.Drawing.Point(203, 458);
+            this.filenameBox.Location = new System.Drawing.Point(238, 458);
             this.filenameBox.Name = "filenameBox";
             this.filenameBox.Size = new System.Drawing.Size(360, 20);
             this.filenameBox.TabIndex = 16;
@@ -207,7 +183,7 @@
             this.getFileBtn.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.getFileBtn.ForeColor = System.Drawing.Color.Black;
             this.getFileBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.getFileBtn.Location = new System.Drawing.Point(305, 10);
+            this.getFileBtn.Location = new System.Drawing.Point(340, 10);
             this.getFileBtn.Name = "getFileBtn";
             this.getFileBtn.Size = new System.Drawing.Size(90, 35);
             this.getFileBtn.TabIndex = 17;
@@ -254,9 +230,9 @@
             // label3
             // 
             this.label3.BackColor = System.Drawing.SystemColors.Control;
-            this.label3.Location = new System.Drawing.Point(-3, 54);
+            this.label3.Location = new System.Drawing.Point(0, 54);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(193, 23);
+            this.label3.Size = new System.Drawing.Size(225, 23);
             this.label3.TabIndex = 19;
             // 
             // InfoLabel
@@ -275,10 +251,51 @@
             // label5
             // 
             this.label5.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.label5.Location = new System.Drawing.Point(203, 478);
+            this.label5.Location = new System.Drawing.Point(238, 478);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(360, 1);
             this.label5.TabIndex = 21;
+            // 
+            // titleLabel
+            // 
+            this.titleLabel.Font = new System.Drawing.Font("微软雅黑", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.titleLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.titleLabel.Location = new System.Drawing.Point(240, 72);
+            this.titleLabel.Name = "titleLabel";
+            this.titleLabel.Size = new System.Drawing.Size(508, 40);
+            this.titleLabel.TabIndex = 22;
+            this.titleLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // detailButton
+            // 
+            this.detailButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(111)))), ((int)(((byte)(255)))));
+            this.detailButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.detailButton.FlatAppearance.BorderSize = 0;
+            this.detailButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.detailButton.Font = new System.Drawing.Font("等线", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.detailButton.ForeColor = System.Drawing.SystemColors.Window;
+            this.detailButton.Location = new System.Drawing.Point(10, 451);
+            this.detailButton.Name = "detailButton";
+            this.detailButton.Size = new System.Drawing.Size(65, 35);
+            this.detailButton.TabIndex = 23;
+            this.detailButton.Text = "细节";
+            this.detailButton.UseVisualStyleBackColor = false;
+            this.detailButton.Click += new System.EventHandler(this.detail_Click);
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.Control;
+            this.label1.Location = new System.Drawing.Point(0, 442);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(225, 59);
+            this.label1.TabIndex = 24;
+            // 
+            // ImageLabel
+            // 
+            this.ImageLabel.Location = new System.Drawing.Point(238, 333);
+            this.ImageLabel.Name = "ImageLabel";
+            this.ImageLabel.Size = new System.Drawing.Size(260, 110);
+            this.ImageLabel.TabIndex = 25;
             // 
             // MainWindow
             // 
@@ -286,6 +303,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(760, 500);
+            this.Controls.Add(this.ImageLabel);
+            this.Controls.Add(this.detailButton);
+            this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.InfoLabel);
             this.Controls.Add(this.backBtn);
@@ -294,19 +314,19 @@
             this.Controls.Add(this.deleteBtn);
             this.Controls.Add(this.downloadBtn);
             this.Controls.Add(this.renameBtn);
-            this.Controls.Add(this.checkLengthBtn);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.DetailLabel);
             this.Controls.Add(this.uploadBtn);
             this.Controls.Add(this.fileListBox);
             this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.line1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainWindow";
             this.Text = "MainForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.MainWindow_Load);
             this.VisibleChanged += new System.EventHandler(this.MainWindow_VisibleChanged);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
@@ -322,9 +342,7 @@
         private System.Windows.Forms.ListBox fileListBox;
         private System.Windows.Forms.Label line1;
         private System.Windows.Forms.Button uploadBtn;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button checkLengthBtn;
+        private System.Windows.Forms.Label DetailLabel;
         private System.Windows.Forms.Button renameBtn;
         private System.Windows.Forms.Button downloadBtn;
         private System.Windows.Forms.Button deleteBtn;
@@ -335,6 +353,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label InfoLabel;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label titleLabel;
+        private System.Windows.Forms.Button detailButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ImageLabel;
     }
 
 }
